@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "../css/todo.css";
 
 class Todo extends Component {
     constructor(props) {
@@ -14,10 +15,15 @@ class Todo extends Component {
         this.renderTodoEdit = this.renderTodoEdit.bind(this);
     }
 
+    componentDidUpdate() {
+        if (this.state.editing) this._updateText.focus();
+    }
+
     edit() {
         this.setState({
             editing: true
         });
+        this.props.clearError();
     }
 
     update(e) {
@@ -34,26 +40,27 @@ class Todo extends Component {
 
     renderTodo() {
         return (
-            <li>
-                {this.props.children}
-                <button onClick={this.edit} id="edit">
-                    E
+            <li onClick={this.edit} id="edit" title="click to edit">
+                <span className="text">{this.props.children}</span>
+                <button onClick={this.delete} className="delete">
+                    <span role="img">&#10005;</span>
                 </button>
-                <button onClick={this.delete}>X</button>
             </li>
         );
     }
 
     renderTodoEdit() {
         return (
-            <form onSubmit={this.update}>
-                <input
-                    type="text"
-                    ref={input => (this._updateText = input)}
-                    defaultValue={this.props.children}
-                />
-                <button>U</button>
-            </form>
+            <li id="edit">
+                <form onSubmit={this.update} id="updateForm">
+                    <input
+                        type="text"
+                        ref={input => (this._updateText = input)}
+                        defaultValue={this.props.children}
+                    />
+                    <button className="update">&#128190;</button>
+                </form>
+            </li>
         );
     }
 

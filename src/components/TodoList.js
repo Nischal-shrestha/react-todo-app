@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Todo from "./Todo";
+import "../css/todo.css";
 
 class TodoList extends Component {
     constructor(props) {
@@ -9,7 +10,8 @@ class TodoList extends Component {
                 // { id: "1", text: "Do laundry" },
                 // { id: "2", text: "Fill in tax form" },
                 // { id: "3", text: "Make a todo app" }
-            ]
+            ],
+            errors: null
         };
 
         this.eachTodo = this.eachTodo.bind(this);
@@ -17,16 +19,24 @@ class TodoList extends Component {
         this.update = this.update.bind(this);
         this.delete = this.delete.bind(this);
         this.nextId = this.nextId.bind(this);
+        this.clearError = this.clearError.bind(this);
     }
 
     update(updateText, index) {
         console.log("updating todo at index ", index, updateText);
-        this.setState(prevState => ({
-            todos: prevState.todos.map(
-                todo =>
-                    todo.id !== index ? todo : { ...todo, text: updateText }
-            )
-        }));
+        if (updateText.length > 0) {
+            this.setState(prevState => ({
+                todos: prevState.todos.map(
+                    todo =>
+                        todo.id !== index ? todo : { ...todo, text: updateText }
+                )
+            }));
+        } else {
+            console.log("Update failed : No text input");
+            this.setState({
+                error: "Please enter something in update text field."
+            });
+        }
     }
 
     delete(index) {
@@ -43,6 +53,7 @@ class TodoList extends Component {
                 index={todo.id}
                 onChange={this.update}
                 onDelete={this.delete}
+                clearError={this.clearError}
             >
                 {todo.text}
             </Todo>
@@ -51,15 +62,21 @@ class TodoList extends Component {
 
     addTodo(e) {
         e.preventDefault();
-        this.setState(prevState => ({
-            todos: [
-                ...prevState.todos,
-                {
-                    id: this.nextId(),
-                    text: this._newText.value
-                }
-            ]
-        }));
+        if (this._newText.value.length > 0) {
+            this.setState(prevState => ({
+                todos: [
+                    {
+                        id: this.nextId(),
+                        text: this._newText.value
+                    },
+                    ...prevState.todos
+                ]
+            }));
+        } else {
+            this.setState({
+                error: "Please add some task."
+            });
+        }
     }
 
     nextId() {
@@ -67,14 +84,26 @@ class TodoList extends Component {
         return this.uniqueId++;
     }
 
+    clearError() {
+        this.setState({
+            error: ""
+        });
+    }
+
     render() {
         return (
             <div id="TodoList">
-                <form onSubmit={this.addTodo}>
-                    <input type="text" ref={input => (this._newText = input)} />
+                <h1>React Todo List</h1>
+                <span className="error">{this.state.error}</span>
+                <form id="TodoForm" onSubmit={this.addTodo}>
+                    <input
+                        type="text"
+                        ref={input => (this._newText = input)}
+                        onKeyDown={this.clearError}
+                    />
                     <button>Add</button>
                 </form>
-                {this.state.todos.map(this.eachTodo)}
+                <ul className="todos">{this.state.todos.map(this.eachTodo)}</ul>
             </div>
         );
     }
