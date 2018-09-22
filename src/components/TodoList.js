@@ -104,6 +104,12 @@ class TodoList extends Component {
                     <button>Add</button>
                 </form>
                 <ul className="todos">{this.state.todos.map(this.eachTodo)}</ul>
+                <div class="fixed-author">
+                    Made by -{" "}
+                    <a href="https://nischal-shrestha.github.io">
+                        Nischal Shrestha
+                    </a>
+                </div>
             </div>
         );
     }

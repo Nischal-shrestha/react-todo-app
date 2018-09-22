@@ -118,3 +118,24 @@ ul.todos {
     font-size: 1.1em;
     cursor: pointer;
 }
+
+div.fixed-author {
+    position: fixed;
+    bottom: 4%;
+    left: 2%;
+    background: dimgray;
+    color: white;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.fixed-author > a {
+    text-decoration: none;
+    color: powderblue;
+    font-weight: bold;
+}
+
+.fixed-author > a:hover {
+    color: lightblue;
+    text-decoration: underline;
+}
